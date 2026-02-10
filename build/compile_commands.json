@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/mhnd/Documents/ICPC/build",
+  "command": "/usr/bin/g++ -Dmhnd01s -g -std=c++23 -Winvalid-pch -x c++-header -include /home/mhnd/Documents/ICPC/build/CMakeFiles/ICPC.dir/cmake_pch.hxx -o CMakeFiles/ICPC.dir/cmake_pch.hxx.gch -c /home/mhnd/Documents/ICPC/build/CMakeFiles/ICPC.dir/cmake_pch.hxx.cxx",
+  "file": "/home/mhnd/Documents/ICPC/build/CMakeFiles/ICPC.dir/cmake_pch.hxx.cxx",
+  "output": "/home/mhnd/Documents/ICPC/build/CMakeFiles/ICPC.dir/cmake_pch.hxx.gch"
+},
+{
+  "directory": "/home/mhnd/Documents/ICPC/build",
+  "command": "/usr/bin/g++ -Dmhnd01s -g -std=c++23 -Winvalid-pch -include /home/mhnd/Documents/ICPC/build/CMakeFiles/ICPC.dir/cmake_pch.hxx -fmodules-ts -fmodule-mapper=CMakeFiles/ICPC.dir/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ICPC.dir/main.cpp.o -c /home/mhnd/Documents/ICPC/main.cpp",
+  "file": "/home/mhnd/Documents/ICPC/main.cpp",
+  "output": "/home/mhnd/Documents/ICPC/build/CMakeFiles/ICPC.dir/main.cpp.o"
+}
+]

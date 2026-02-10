@@ -1,0 +1,27 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/mhnd/Documents/ICPC/build",
+	"dir-cur-src" : "/home/mhnd/Documents/ICPC",
+	"dir-top-bld" : "/home/mhnd/Documents/ICPC/build",
+	"dir-top-src" : "/home/mhnd/Documents/ICPC",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : [],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/mhnd/Documents/ICPC/build/CMakeFiles/ICPC.dir",
+	"sources" : 
+	{
+		"CMakeFiles/ICPC.dir/main.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/mhnd/Documents/ICPC/main.cpp"
+		}
+	}
+}

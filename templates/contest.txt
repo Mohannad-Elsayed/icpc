@@ -1,0 +1,228 @@
+level 1: 13
+3 on first 4 sessions :easy
+
+1 pure math: quadratic equation, gcd + lcm :med
+
+1 prefix + frequency :med
+
+1 partial :med
+
+1 prefix + suffix :med
+
+1 count subarrays have length equal to sum :hard
+
+1 basic binary search on answer :easy
+
+2 string: easy, med
+1 hard
+
+
+
+level 2: 12
+1 binary search :easy
+2 number theory med, hard
+1 bitmasks
+1 complete search
+1 two pointers
+3 dp easy, med, med-hard
+3 graphs easy, med, hard
+
+
+
+
+
+ADD TRAPS IN ALL PROBLEMS!!!!
+SHUFFLE PROBLEMS
+
+\epigraph{\it{.اللَّهُمَّ بَلِّغْنَا رَمَضَانَ، وَأَعِنَّا فِيهِ عَلَى الِاجْتِهَادِ فِي الطَّاعَاتِ، وَأَكْرِمْنَا فِيهِ بِلَيْلَةِ القَدْرِ، وَاكْتُبْ لَنَا فِيهِ العِتْقَ مِنَ النَّارِ}}
+
+
+\texttt{P}\color{red}{\texttt{NP}}\texttt{N} \to \texttt{P}\color{red}{\texttt{P}}\texttt{N}
+
+
+
+level1:
+A: cin >> n; cout << n; (ace)
+https://polygon.codeforces.com/p9xJv6R/Gomaa__/qualification-lvl-1-2025-week-1-ace
+
+B: given isolated circles (centre and radius), allowed to take k circles to be the bases, what's the maximum area you can have (geometry, easy)
+https://polygon.codeforces.com/p7q5i2w/melsayed/circles
+
+C: given big string 10000, replace all Helwan with Capital (strings, easy-med)
+https://polygon.codeforces.com/p2cOca9/melsayed/helwan-to-capital
+
+
+D: https://atcoder.jp/contests/abc405/tasks/abc405_c (arrays, math, easy)
+https://polygon.codeforces.com/p8C13DR/melsayed/abc405c-sum-of-products
+
+E: https://atcoder.jp/contests/abc403/tasks/abc403_c (stls, med)
+https://polygon.codeforces.com/p92hRVu/melsayed/abc403c-403-forbidden
+
+F: https://atcoder.jp/contests/abc397/tasks/abc397_c (frequency, stls, med)
+https://polygon.codeforces.com/p0WvXTg/melsayed/abc397c-variety-split-easy
+
+G: https://codeforces.com/problemset/problem/313/B (prefix, easy)
+313B
+
+H: https://codeforces.com/problemset/problem/961/B (prefix, suffix, hard)
+961B
+
+I: https://atcoder.jp/contests/abc394/tasks/abc394_d (regular bracket, stack, easy)
+https://polygon.codeforces.com/p5C0TEt/melsayed/abc394d-colorful-bracket-sequence
+
+J: https://www.codechef.com/problems/RED23?tab=statement (ad-hoc, math, easy-med) [n up to 1e9, t up to 1e4]
+https://polygon.codeforces.com/p3JITzS/melsayed/codechef-red23-number-reduction
+
+K: https://polygon.codeforces.com/p16gGNR/detective...dots/partial-xor (parital xor, easy-med)
+https://polygon.codeforces.com/p16gGNR/detective...dots/partial-xor
+
+L: https://codeforces.com/problemset/problem/424/B (bs, sorting, easy-med)
+424B
+
+M: https://www.codechef.com/problems/PATH3 (2d array, ad-hoc, med-hard)
+https://polygon.codeforces.com/p6dvCqh/melsayed/codechef-path3
+
+N: https://codeforces.com/gym/105200/problem/G (bs, med-hard)
+105200G
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.codechef.com/problems/ADD13?tab=statement (ad-hoc, easy-med)
+https://www.codechef.com/problems/RED23?tab=statement (ad-hoc, math, easy-med) [n up to 1e9, t up to 1e4]
+https://atcoder.jp/contests/abc436/tasks/abc436_b (2d array, impl, med)
+
+
+
+
+
+
+================================================================================
+level2:
+A: cin >> n; cout << n; (ace)
+https://polygon.codeforces.com/p9xJv6R/Gomaa__/qualification-lvl-1-2025-week-1-ace
+
+B: https://atcoder.jp/contests/abc384/tasks/abc384_d (two pointers, med)
+https://polygon.codeforces.com/p0pkgai/melsayed/abc384d-repeated-sequence
+
+C: https://atcoder.jp/contests/abc383/tasks/abc383_d (nt, primes, sieve, med)
+https://polygon.codeforces.com/p6uRLG0/melsayed/abc383d-9-divisors
+
+D: https://atcoder.jp/contests/abc380/tasks/abc380_d (bitmasks, med)
+https://polygon.codeforces.com/p1W6rbK/melsayed/abc380d-strange-mirroring
+
+E: https://atcoder.jp/contests/abc436/tasks/abc436_d (bfs, 2d array, med)
+https://polygon.codeforces.com/p9UsSdT/melsayed/abc436d-teleport-maze
+
+F: https://atcoder.jp/contests/abc439/tasks/abc439_e (dp, hard)
+https://polygon.codeforces.com/p7u9K0C/melsayed/abc439e-kite
+
+G: https://codeforces.com/gym/106016/problem/D (nt, med-hard)
+106016D
+
+H: https://codeforces.com/contest/1353/problem/D (recursion, constructive, med)
+1353D
+
+I: https://www.codechef.com/problems/XORSUB7?tab=statement (dp, med)
+https://polygon.codeforces.com/p8vDmyu/melsayed/codechef-xorsub7
+
+J: https://www.codechef.com/problems/MAKEAP7?tab=statement (nt, gcd, med)
+https://polygon.codeforces.com/p9ocxek/melsayed/codechef-makeap7
+
+K: given big string 10000, replace all Helwan with Capital (strings, easy)
+https://polygon.codeforces.com/p2cOca9/melsayed/helwan-to-capital
+
+L: https://codeforces.com/problemset/problem/424/B (bs, sorting, easy-med)
+424B
+
+M: https://codeforces.com/gym/102942/problem/F (two pointers, easy)
+102942F
+
+N: https://codeforces.com/gym/105200/problem/E (dfs, bfs, easy)
+105200E
+
+
+
+
+
+
+
+https://www.codechef.com/problems/COLLATZEZ (bitmask, bruteforce, easy-med)
+https://www.codechef.com/problems/DELARR77 (greedy, easy-med)
+https://www.codechef.com/problems/PATH3 (ad-hoc, 2d array, easy-med)
+
+
+
+
+
+
+
+
+
+
+
+
+i'll give you a problem idea and you have to provide:
+
+1- statement: don't include any story in the statement, just a direct given and requirement
+2- input & output section
+3- a small example with explanation
+4- all and every corner case that this problem might have
+5- use lowercase english letters instead of uppercase for variable names in the statement
+6- do the input and output section in codeforces style
+
+
+
+problem:
+
+
+
+
+
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\footnote{A \textit{regular bracket sequence} is a bracket sequence that...}
+If $t$ is \textbf{not} a \textit{regular bracket sequence}\footnote{A \textit{regular bracket sequence} is a bracket sequence that...}, the score is $0$.
+
+If there exists a regular bracket subsequence\footnote{A sequence $a$ is a subsequence of a sequence $b$ if...} $r$ of $t$...
+
+
+
+
+
+
+gen -t 1 -n 5000 -mnai 1 -mxai 1 > $
+gen -t 1 -n 5000 -mnai 1073741823 -mxai 1073741823 > $
+gen -t 1 -n 5000 -mnai 1073741822 -mxai 1073741823 > $
+<#list 1..10 as t>
+    gen -t 1 -n 5000         ${t} > $
+    gen -t 10 -n 5000        ${t} > $
+    gen -t 100 -n 5000       ${t} > $
+</#list>
+
+    gen -t 1 -n 300000 ${t} > $
+    gen -t 10 -n 300000 ${t} > $
+    gen -t 100 -n 300000 ${t} > $
+    gen -t 1000 -n 300000 ${t} > $
+    gen -t 10000 -n 300000 ${t} > $
+
+
+
+4 4
+....
+.a..
+####
+ba#b
+
+\NewDocumentCommand{\DefSubsequence}{O{a}O{b}}{A sequence $#1$ is a subsequence of a sequence $#2$ if $#1$ can be obtained from $#2$ by the deletion of several (possibly, zero or all) element from arbitrary positions.
+}

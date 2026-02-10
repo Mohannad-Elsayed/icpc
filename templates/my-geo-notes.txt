@@ -1,0 +1,39 @@
+// find solutions to the quadratic formula
+int quadRoots(ld a, ld b, ld c, ld& s1, ld& s2) {
+    assert(a != 0);
+    ld disc = b*b - 4*a*c;
+    if (disc < 0) return 0;
+    ld sum = (b >= 0) ? -b-sqrt(disc) : -b+sqrt(disc);
+    s1 = sum/(2*a);
+    s2 = sum == 0 ? 0 : (2*c)/sum;
+    return 1 + (disc > 0);
+}
+
+// transformations
+pt translate(pt p, pt v) { return p + v; }
+pt scale(pt p, double factor, pt c = pt(0, 0)) { return c + (p-c) * factor; }
+pt rotate(pt p, double alph, pt c = pt(0, 0)) { return c + polar(1.0, alph) * (p - c); }
+
+// 2 points p, q to fp, fq, apply same transformation to a third point
+pt linearTransfo(pt p, pt q, pt r, pt fp, pt fq) {
+    return fp + (r-p) * (fq-fp) / (q-p);
+}
+
+// angle between 2 vectors
+double angle(pt v, pt w) {
+    return acos(clamp(dot(v,w) / abs(v) / abs(w), -1.0, 1.0));
+}
+
+// polar sort points around an origin point
+bool half(pt p) { // true if in blue half
+    assert(p.X != 0 || p.Y != 0);
+    return p.Y > 0 || (p.Y == 0 && p.X < 0);
+}
+void polarSortAround(vector<pt>& points) {
+    pt o = pt(0, 0);
+    sort(points.begin(), points.end(), [&](pt v, pt w) {
+        return make_tuple(half(v-o), 0) <
+               make_tuple(half(w-o), cross(v-o, w-o));
+    });
+}
+
