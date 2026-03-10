@@ -1,0 +1,8 @@
+*.gch
+
+bits/stdc++
+.cache
+.idea
+.venv
+/build
+/cmake-build-fast

@@ -1,3 +1,31 @@
+using ld = double;
+using point = complex<ld>;
+
+const ll inf = 7e18;
+const ld EPS = 1e-9;
+const ld pi = acos(-1);
+
+#define X real()
+#define Y imag()
+
+#define dot(a, b) (conj(a) * (b)).X
+#define cross(a, b) (conj(a) * (b)).Y
+
+struct compX{
+    bool operator()(point a, point b) const {
+        return a.X != b.X ? a.X < b.X : a.Y < b.Y;
+    }
+};
+struct compY{
+    bool operator()(point a, point b) const {
+        return a.Y != b.Y ? a.Y < b.Y : a.X < b.X;
+    }
+};
+
+int sign(ld x) {
+    return (x > EPS) - (x < -EPS);
+}
+
 // find solutions to the quadratic formula
 int quadRoots(ld a, ld b, ld c, ld& s1, ld& s2) {
     assert(a != 0);
@@ -36,4 +64,7 @@ void polarSortAround(vector<pt>& points) {
                make_tuple(half(w-o), cross(v-o, w-o));
     });
 }
+
+// to know the ccw angle between 2 vectors, get the angle using dot product and if the cross product is negative, make it (2 pi - angle)
+
 

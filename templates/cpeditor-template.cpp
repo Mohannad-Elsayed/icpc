@@ -7,12 +7,7 @@ using namespace std;
 using ll = long long;
 void solve();
 signed main() {
-#ifdef mhnd01s
-    int x = mt19937(random_device()())()%100;printf("%d\n", x);
-    freopen("out", "wt", stdout);
-#else
     cin.tie(0)->sync_with_stdio(0);
-#endif
     cin.exceptions(cin.failbit);
     int t = 1;
     cin >> t;

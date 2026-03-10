@@ -27,7 +27,7 @@ diff[to_row + 1][to_col + 1] += v;
 
 <!-- <div style="page-break-after: always;"></div> -->
 
-# BIT
+# BIT, fenwick
 ```
 struct BIT { // 0-based
     int n;
@@ -306,6 +306,23 @@ struct sparse{
         if(l > r) return {};
         int len = __lg(r - l + 1);
         return merge(table[len][l], table[len][r - (1 << len) + 1]);
+    }
+    
+    T query_log(int l, int r) {
+        T res;
+        bool first = true;
+        for (int j = Log - 1; j >= 0; j--) {
+            if ((1 << j) <= r - l + 1) {
+                if (first) {
+                    res = table[j][l];
+                    first = false;
+                } else {
+                    res = merge(res, table[j][l]);
+                }
+                l += (1 << j);
+            }
+        }
+        return res;
     }
 };
 ```
@@ -2000,7 +2017,7 @@ namespace comb {
     int MXS_ = 1;
     vector<int> fac_(1, 1), inv_(1, 1);
  
-    int fp(int b, int p = mod - 2, int MOD = mod) {
+    int fp(int b, int p = MOD - 2) {
         int ans = 1;
         while(p) {
             if(p & 1) ans = int(ans * 1LL * b % MOD);
@@ -2204,6 +2221,36 @@ ll modInv(ll a, ll m) {
 }
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
+# CRT
+```
+using T = __int128;
+// ax + by = __gcd(a, b)
+// returns __gcd(a, b)
+T extended_euclid(T a, T b, T &x, T &y) {
+  T xx = y = 0;
+  T yy = x = 1;
+  while (b) {
+    T q = a / b;
+    T t = b; b = a % b; a = t;
+    t = xx; xx = x - q * xx; x = t;
+    t = yy; yy = y - q * yy; y = t;
+  }
+  return a;
+}
+// finds x such that x % m1 = a1, x % m2 = a2. m1 and m2 may not be coprime
+// here, x is unique modulo m = lcm(m1, m2). returns (x, m). on failure, m = -1.
+pair<T, T> CRT(T a1, T m1, T a2, T m2) {
+  T p, q;
+  T g = extended_euclid(m1, m2, p, q);
+  if (a1 % g != a2 % g) return make_pair(0, -1);
+  T m = m1 / g * m2;
+  p = (p % m + m) % m;
+  q = (q % m + m) % m;
+  return make_pair((p * a2 % m * (m1 / g) % m + q * a1 % m * (m2 / g) % m) %  m, m);
+}
+```
 <!-- <div style="page-break-after: always;"></div> -->
 
 #  Math
@@ -2665,12 +2712,13 @@ void solve() {
 */
 
 using ll = int64_t;
-using ld = double;
-using point = complex<ld>;
 
-const ll inf = 7e18;
+using ld = double;
+using pt = complex<ld>;
+
+const ll INF = 7e18;
 const ld EPS = 1e-9;
-const ld pi = acos(-1);
+const ld PI = acos(-1);
 
 #define X real()
 #define Y imag()
@@ -2678,60 +2726,65 @@ const ld pi = acos(-1);
 #define dot(a, b) (conj(a) * (b)).X
 #define cross(a, b) (conj(a) * (b)).Y
 
-struct compX{
-    bool operator()(point a, point b) const {
-        return a.X != b.X ? a.X < b.X : a.Y < b.Y;
-    }
-};
-struct compY{
-    bool operator()(point a, point b) const {
-        return a.Y != b.Y ? a.Y < b.Y : a.X < b.X;
-    }
-};
-
 int sign(ld x) {
     return (x > EPS) - (x < -EPS);
 }
 
+struct compX{
+    bool operator()(pt a, pt b) const {
+        return a.X != b.X ? a.X < b.X : a.Y < b.Y;
+    }
+};
+struct compY{
+    bool operator()(pt a, pt b) const {
+        return a.Y != b.Y ? a.Y < b.Y : a.X < b.X;
+    }
+};
+
 // ================ line, segment ==========================
 
-// projection of point p onto line ab
-point project(point a, point b, point p) {
-    point ab = b - a;
+// projection of pt p onto line ab
+pt project(pt a, pt b, pt p) {
+    pt ab = b - a;
     return a + ab * dot(p - a, ab) / norm(ab);
 }
 
 // works for any orientation
-bool onSegment(point a, point b, point p) {
+bool onSegment(pt a, pt b, pt p) {
     return sign(cross(b - a, p - a)) == 0 &&
            sign(dot(p - a, p - b)) <= 0;
 }
 
 // ccw: >0 left, <0 right, =0 collinear
-int ccw(point a, point b, point c) {
+int ccw(pt a, pt b, pt c) {
     return sign(cross(b - a, c - a));
 }
 
-// works for any points
-ld distanceToLine(point a, point b, point p) {
-    return fabs(cross(b - a, p - a)) / abs(b - a);
+// works for any pts
+ld distanceToLine(pt a, pt b, pt p) {
+    return fabsl(cross(b - a, p - a)) / abs(b - a);
 }
 
-// works for any points
-ld distanceToSegment(point a, point b, point p) {
+// works for any line
+ld distanceToLine(ld A, ld B, ld C, pt p) {
+    return fabsl(A*p.X + B*p.Y + C) / abs(pt(A, B));
+}
+
+// works for any pts
+ld distanceToSegment(pt a, pt b, pt p) {
     if (dot(b - a, p - a) < 0) return abs(p - a);
     if (dot(a - b, p - b) < 0) return abs(p - b);
     return distanceToLine(a, b, p);
 }
 
 // works for intersecting lines (not parallel)
-point lineIntersect(point a, point b, point c, point d) {
-    point ab = b - a, cd = d - c;
+pt lineIntersect(pt a, pt b, pt c, pt d) {
+    pt ab = b - a, cd = d - c;
     return a + ab * (cross(c - a, cd) / cross(ab, cd));
 }
 
-// works for all segments (returns intersection point if exists)
-bool segmentsIntersect(point a, point b, point c, point d, point &inter) {
+// works for all segments (returns intersection pt if exists)
+bool segmentsIntersect(pt a, pt b, pt c, pt d, pt &inter) {
     int d1 = ccw(a, b, c), d2 = ccw(a, b, d);
     int d3 = ccw(c, d, a), d4 = ccw(c, d, b);
 
@@ -2747,11 +2800,11 @@ bool segmentsIntersect(point a, point b, point c, point d, point &inter) {
 }
 
 // works for any triangle
-ld triangleArea(point a, point b, point c) {
+ld triangleArea(pt a, pt b, pt c) {
     return 0.5 * fabs(cross(b - a, c - a));
 }
 
-bool pointInTriangle(point a, point b, point c, point p) {
+bool ptInTriangle(pt a, pt b, pt c, pt p) {
     ld s1 = cross(b - a, p - a);
     ld s2 = cross(c - b, p - b);
     ld s3 = cross(a - c, p - c);
@@ -2760,33 +2813,33 @@ bool pointInTriangle(point a, point b, point c, point p) {
 }
 
 // angle abc in radians
-ld angle_abc(point a, point b, point c) {
+ld angle_abc(pt a, pt b, pt c) {
     return acos(clamp<ld>(dot(a - b, c - b) / (abs(a - b) * abs(c - b)), -1, 1));
 }
 
 // ============================= Circles ================================
 
-pair<ld, point> findCircle(point a, point b, point c) {
-    point m1 = (a + b) / 2.0, m2 = (b + c) / 2.0;
-    point ab = b - a, bc = c - b;
-    point center = lineIntersect(m1, m1 + point(-ab.Y, ab.X),
-                                 m2, m2 + point(-bc.Y, bc.X));
+pair<ld, pt> findCircle(pt a, pt b, pt c) {
+    pt m1 = (a + b) / 2.0, m2 = (b + c) / 2.0;
+    pt ab = b - a, bc = c - b;
+    pt center = lineIntersect(m1, m1 + pt(-ab.Y, ab.X),
+                                 m2, m2 + pt(-bc.Y, bc.X));
     return {abs(center - a), center};
 }
 
-vector<point> lineCircleIntersect(point a, point b, point center, ld r) {
-    point ab = b - a, ao = center - a;
-    point proj = a + ab * dot(ao, ab) / norm(ab);
+vector<pt> lineCircleIntersect(pt a, pt b, pt center, ld r) {
+    pt ab = b - a, ao = center - a;
+    pt proj = a + ab * dot(ao, ab) / norm(ab);
     ld d = abs(proj - center);
     if (d > r + EPS) return {};
     if (abs(d - r) < EPS) return {proj};
     ld h = (ld)sqrtl(r*r - d*d);
-    point dir = ab / abs(ab);
+    pt dir = ab / abs(ab);
     return {proj + dir * h, proj - dir * h};
 }
 
-// in 0, 1, 2 points
-vector<point> circleCircleIntersect(point c1, ld r1, point c2, ld r2) {
+// in 0, 1, 2 pts
+vector<pt> circleCircleIntersect(pt c1, ld r1, pt c2, ld r2) {
     ld d = abs(c2 - c1);
     if(d > r1 + r2 + EPS || d < abs(r1 - r2) - EPS) return {};
     if(abs(d) < EPS && abs(r1 - r2) < EPS) return vector(3, c1); // infinity intersection
@@ -2794,31 +2847,31 @@ vector<point> circleCircleIntersect(point c1, ld r1, point c2, ld r2) {
     ld a = (r1*r1 - r2*r2 + d*d) / (2 * d), h2 = r1*r1 - a*a;
     if (h2 < -EPS) return {};
 
-    point dir = (c2 - c1) / d, p = c1 + dir * a;
+    pt dir = (c2 - c1) / d, p = c1 + dir * a;
     if (abs(h2) < EPS) return {p};
     ld h = sqrt(h2);
-    point offset = dir * point(0, 1) * h;
+    pt offset = dir * pt(0, 1) * h;
     return {p + offset, p - offset};
 }
 
-pair<ld, point> minimumEnclosingCircle(vector<point> p) {
-    using circle = pair<ld, point>;
+pair<ld, pt> minimumEnclosingCircle(vector<pt> p) {
+    using circle = pair<ld, pt>;
     shuffle(p.begin(), p.end(), mt19937(random_device{}()));
-    auto contains = [](circle c, const vector<point>& pts) {
+    auto contains = [](circle c, const vector<pt>& pts) {
         return all_of(pts.begin(), pts.end(),
                       [&](auto p) {return abs(p - c.second) <= c.first + EPS;});
     };
-    auto circleFrom2 = [](point a, point b) {
-        point c = (a + b) / 2.0;
+    auto circleFrom2 = [](pt a, pt b) {
+        pt c = (a + b) / 2.0;
         return circle{abs(a - c), c};
     };
-    auto circleFrom3 = [](point a, point b, point c) {
-        point ab = (a + b) / 2.0, ac = (a + c) / 2.0;
-        point ab_perp = (b - a) * point(0, 1), ac_perp = (c - a) * point(0, 1);
-        point o = lineIntersect(ab, ab + ab_perp, ac, ac + ac_perp);
+    auto circleFrom3 = [](pt a, pt b, pt c) {
+        pt ab = (a + b) / 2.0, ac = (a + c) / 2.0;
+        pt ab_perp = (b - a) * pt(0, 1), ac_perp = (c - a) * pt(0, 1);
+        pt o = lineIntersect(ab, ab + ab_perp, ac, ac + ac_perp);
         return circle{abs(o - a), o};
     };
-    vector<point> R;
+    vector<pt> R;
     function<circle(int)> welzl = [&](int n) -> circle {
         if (n == 0 || R.size() == 3) {
             if (R.empty()) return {};
@@ -2826,7 +2879,7 @@ pair<ld, point> minimumEnclosingCircle(vector<point> p) {
             if (R.size() == 2) return circleFrom2(R[0], R[1]);
             return circleFrom3(R[0], R[1], R[2]);
         }
-        point q = p[n - 1];
+        pt q = p[n - 1];
         circle D = welzl(n - 1);
         if (contains(D, {q})) return D;
         R.push_back(q);
@@ -2840,7 +2893,7 @@ pair<ld, point> minimumEnclosingCircle(vector<point> p) {
 // ===================== polygon ============================
 
 // works for any polygon (returns +1 for ccw, -1 for cw)
-ld polygonSign(vector<point>& p) {
+ld polygonSign(vector<pt>& p) {
     ld area = 0;
     int n = (int)p.size();
     p.push_back(p[0]);
@@ -2850,8 +2903,8 @@ ld polygonSign(vector<point>& p) {
 }
 
 // works for any polygon (removes dups, enforces ccw order)
-void normPolygon(vector<point>& p) {
-    vector<point> res;
+void normPolygon(vector<pt>& p) {
+    vector<pt> res;
     for(auto i : p) if(res.empty() || abs(i - res.back()) > EPS)
             res.push_back(i);
 
@@ -2864,12 +2917,12 @@ void normPolygon(vector<point>& p) {
 }
 
 // works for simple polygons with integer coordinates
-ll internalPointsCount(vector<point>& p) {
+ll internalPointsCount(vector<pt>& p) {
     ll A2 = 0, B = 0;
     int n = (int)p.size();
     p.push_back(p[0]);
     for (int i = 0; i < n; ++i) {
-        point a = p[i], b = p[i + 1];
+        pt a = p[i], b = p[i + 1];
         A2 += ll(a.X * b.Y - a.Y * b.X);
         B += __gcd((ll)abs(b.X - a.X), (ll)abs(b.Y - a.Y));
     }
@@ -2878,39 +2931,47 @@ ll internalPointsCount(vector<point>& p) {
 }
 
 // works for any polygon (cw or ccw, convex or not)
-ld polygonArea(const vector<point>& p) {
+ld polygonArea(const vector<pt>& p) {
     int n = (int)p.size();
     ld area = 0;
-    for (int i = 0; i <= n; ++i)
+    for (int i = 0; i+1 < n; ++i)
         area += cross(p[i], p[i + 1]);
     area += cross(p.back(), p.front());
     return fabsl(area) / 2.0;
 }
 
 // works for any polygon (cw or ccw, convex or not)
-bool pointInPolygon(vector<point> &p, point o) {
+bool ptInPolygon(const vector<pt> &p, pt o) {
     int in = 0, n = (int)p.size();
-    p.push_back(p[0]);
-    for (int i = 0; i < n; ++i) {
-        point a = p[i], b = p[i + 1];
-        if (onSegment(a, b, o)) return p.pop_back(), true;
+    for (int i = 0; i+1 < n; ++i) {
+        pt a = p[i], b = p[i + 1];
+        if (onSegment(a, b, o)) return true;
+        if (a.Y > o.Y != b.Y > o.Y) {
+            ld x = a.X + (b.X - a.X) *
+                         (o.Y - a.Y) / (b.Y - a.Y);
+            if(x > o.X) in ^= 1;
+        }
+    }
+    {
+        pt a = p.back(), b = p.front();
+        if (onSegment(a, b, o)) return true;
         if ((a.Y > o.Y) != (b.Y > o.Y)) {
             ld x = a.X + (b.X - a.X) *
                          (o.Y - a.Y) / (b.Y - a.Y);
             if(x > o.X) in ^= 1;
         }
     }
-    p.pop_back();
     return in;
 }
 
+
 // work for simple convex polygon
-bool pointInConvex(vector<point> &poly, point p) {
+bool ptInConvex(vector<pt> &poly, pt p) {
     int n = int(poly.size());
     if(n == 1) return sign(abs(poly[0] - p)) == 0;
     if(n == 2) return onSegment(poly[0], poly[1], p);
 
-    point f = poly[0];
+    pt f = poly[0];
 
     if(sign(cross(poly[1] - f, p - f)) < 0 || sign(cross(poly[n - 1] - f, p - f)) > 0) return false;
 
@@ -2920,22 +2981,26 @@ bool pointInConvex(vector<point> &poly, point p) {
         if(sign(cross(poly[mid] - f, p - f)) > 0) l = mid;
         else r = mid;
     }
-    return pointInTriangle(f, poly[l], poly[r], p);
+    return ptInTriangle(f, poly[l], poly[r], p);
 }
 
 // works for any simple polygon (cw or ccw)
-point polygonCentroid(vector<point>& p) {
+pt polygonCentroid(const vector<pt>& p) {
     ld A = 0, c;
-    point C(0, 0);
+    pt C(0, 0);
     int n = (int)p.size();
-    p.push_back(p[0]);
-    for (int i = 0; i < n; ++i) {
-        point cur = p[i], nxt = p[i + 1];
+    pt cur, nxt;
+    for (int i = 0; i+1 < n; ++i) {
+        cur = p[i], nxt = p[i + 1];
         c = cross(cur, nxt);
         A += c;
         C += (cur + nxt) * c;
     }
-    p.pop_back();
+    cur = p.back(), nxt = p.front();
+    c = cross(cur, nxt);
+    A += c;
+    C += (cur+nxt) * c;
+
     A *= 0.5;
     if (abs(A) < EPS) return C;
     return C / (6.0 * A);
@@ -3040,7 +3105,7 @@ string direction = "DULR";
 
 <!-- <div style="page-break-after: always;"></div> -->
 
-# Random
+# Random mt19937
 ```
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 ll rnd(ll l, ll r) {
@@ -3792,4 +3857,74 @@ int rec(int u, int vis) {
 #pragma GCC optimize("Ofast")
 #pragma GCC optimize ("unroll-loops")
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+```
+
+#Full Dynamic Array
+```
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+template<typename T>
+struct DynArray {
+    struct Node {
+        T val; int pri, sz;
+        Node *l, *r;
+        Node(const T& v) : val(v), pri(rng()), sz(1), l(0), r(0) {}
+    };
+
+    Node* root = 0;
+
+    static int sz(Node* t) { return t ? t->sz : 0; }
+    static void pull(Node* t) { if (t) t->sz = 1 + sz(t->l) + sz(t->r); }
+
+    static void split(Node* t, int k, Node*& l, Node*& r) {
+        if (!t) { l = r = 0; return; }
+        if (sz(t->l) < k) {
+            split(t->r, k - sz(t->l) - 1, t->r, r);
+            l = t;
+        } else {
+            split(t->l, k, l, t->l);
+            r = t;
+        }
+        pull(t);
+    }
+
+    static void merge(Node*& t, Node* l, Node* r) {
+        if (!l || !r) { t = l ? l : r; return; }
+        if (l->pri > r->pri) {
+            merge(l->r, l->r, r);
+            t = l;
+        } else {
+            merge(r->l, l, r->l);
+            t = r;
+        }
+        pull(t);
+    }
+
+    void insert(int pos, const T& val) {
+        Node *l, *r;
+        split(root, pos, l, r);
+        Node* nd = new Node(val);
+        merge(l, l, nd);
+        merge(root, l, r);
+    }
+
+    void erase(int pos) {
+        Node *l, *m, *r;
+        split(root, pos, l, m);
+        split(m, 1, m, r);
+        delete m;
+        merge(root, l, r);
+    }
+
+    T& access(int pos) {
+        Node* t = root;
+        while (true) {
+            int left = sz(t->l);
+            if (pos < left) t = t->l;
+            else if (pos == left) return t->val;
+            else { pos -= left + 1; t = t->r; }
+        }
+    }
+
+    int size() { return sz(root); }
+};
 ```

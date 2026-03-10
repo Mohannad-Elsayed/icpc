@@ -1,10 +1,9 @@
 #include "testlib.h"
-#include <string>
 
 using namespace std;
 const int N = 300'000;
+const int AI = 300'000;
 const int T = 10'000;
-const int AI = 1'000'000'000;
 
 int main(int argc, char* argv[]) {
     registerValidation(argc, argv);
@@ -18,15 +17,11 @@ int main(int argc, char* argv[]) {
         setTestCase(tt);
 
         // Read N
-        int n = inf.readInt(2, N, "n_" + to_string(tt));
+        int n = inf.readInt(1, N, "n_" + to_string(tt));
         inf.readEoln();
 
-        vector<int> arr = inf.readInts(n, 1, AI, "ai");
+        inf.readInts(n, 1, AI, "ai");
         inf.readEoln();
-
-        for (int i = 1; i < (int) arr.size(); i++) {
-            ensuref(arr[i] > arr[i-1], "Array is not strictly increasing. [a_%d = %d, a_%d = %d].", i-1, arr[i-1], i, arr[i]);
-        }
 
         sum_n += n;
         ensuref(sum_n <= N, "Sum of n across all test cases cannot exceed %d.", N);
