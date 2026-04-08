@@ -284,7 +284,7 @@ template<> info segmentTree<info>::defaultVal = info();
 ```
 template<typename T>
 struct sparse{
-    int Log, n;
+    int Log, n, id = ;
     vector<vector<T>> table;
     function<T(T, T)> merge;
     template<class U>
@@ -303,13 +303,13 @@ struct sparse{
         }
     }
     T query(int l, int r) {
-        if(l > r) return {};
+        if(l > r) return id;
         int len = __lg(r - l + 1);
         return merge(table[len][l], table[len][r - (1 << len) + 1]);
     }
     
     T query_log(int l, int r) {
-        T res;
+        T res = id;
         bool first = true;
         for (int j = Log - 1; j >= 0; j--) {
             if ((1 << j) <= r - l + 1) {
@@ -2012,83 +2012,103 @@ for (int i = 0; i < n; i++)
 
 # Combinatorics
 ```
-namespace comb {
-    const int mod = _-_-_-_-_-_;
-    int MXS_ = 1;
-    vector<int> fac_(1, 1), inv_(1, 1);
- 
-    int fp(int b, int p = MOD - 2) {
-        int ans = 1;
-        while(p) {
-            if(p & 1) ans = int(ans * 1LL * b % MOD);
-            b = int(b * 1LL * b % MOD);
-            p >>= 1;
-        }
-        return ans;
+namespace combinatorics {
+    const int mod =;
+    int inv(int a) {
+        int x = 1, x1 = 0, q, t, b = mod;
+        while(b) q = a / b, a -= q * b, t = a, a = b, b = t, x -= q * x1, t = x, x = x1, x1 = t;
+        assert(a == 1);
+        return (x + mod) % mod;
     }
+    struct Z {
+        int v{};
+        Z(int x) : v(x) { }
+        Z(int64_t x) : v(int(x % mod)) { if(v < 0) v += mod; }
+        Z() = default;
+        explicit operator int() const { return v; }
+    };
+    Z operator+(Z const &l, Z const &r) { return {l.v + r.v >= mod? l.v + r.v - mod: l.v + r.v}; }
+    Z operator-(Z const &l, Z const &r) { return {l.v < r.v? l.v + mod - r.v: l.v - r.v}; }
+    Z operator*(Z const &l, Z const &r) { return {int(l.v * 1LL * r.v % mod)}; }
+    Z operator/(Z const &l, Z const &r) { return {int(l.v * 1LL * inv(r.v) % mod)}; }
+    Z operator-(Z const &n) { return {n.v? mod - n.v: 0}; }
+    bool operator==(Z const &l, Z const &r) { return l.v == r.v; }
+    bool operator!=(Z const &l, Z const &r) { return l.v != r.v; }
+    bool operator<(Z const &l, Z const &r) { return l.v < r.v; }
+    ostream& operator << (ostream& out, Z const &n) { return out << n.v; }
+    istream& operator >> (istream& in, Z &n) {
+        int64_t x; in >> x;  n = {x}; return in;
+    }
+    Z operator"" _M(uint64_t x) { return {int64_t(x)}; }
+ 
+    Z fix(int64_t x) {
+        int v = int(x < mod * 2 && x >= -mod? x: x % mod);
+        return v < 0? v + mod: v >= mod? v - mod: v;
+    }
+ 
+    int MXS_ = 1;
+    vector fac_(1, 1_M), inv_(1, 1_M);
  
     void up_(int nw) {
-        if (MXS_ > nw) return;
-        nw = max(MXS_ << 1, 1 << (__lg(nw) + 1));
+        nw = max(MXS_ << 1, 2 << __lg(nw));
         fac_.resize(nw), inv_.resize(nw);
         for(int i = MXS_; i < fac_.size(); i++)
-            fac_[i] = int(fac_[i - 1] * 1LL * i % mod);
+            fac_[i] = fac_[i - 1] * i;
  
-        inv_.back() = fp(fac_.back(), mod - 2);
+        inv_.back() = 1 / fac_.back();
         for(int i = int(inv_.size()) - 2; i >= MXS_; i--)
-            inv_[i] = int(inv_[i + 1] * 1LL * (i + 1) % mod);
+            inv_[i] = inv_[i + 1] * (i + 1);
         MXS_ = nw;
     }
- 
-    inline int nCr(int n, int r) {
-        if(r < 0 || r > n) return 0;
-        up_(n);
-        return int(fac_[n] * 1LL * inv_[r] % mod * inv_[n - r] % mod);
-    }
-    inline int nCr1(int n, int r) {
-        if(r < 0 || r > n) return 0;
-        r = min(r, n - r);
-        up_(r);
-        int ans = inv_[r];
-        for(int i = n - r + 1; i <= n; i++) {
-            ans = int(ans * 1LL * i % mod);
+    Z fp(Z b, int64_t p) {
+        Z ans = 1;
+        while(p) {
+            if(p & 1) ans = ans * b;
+            b = b * b, p >>= 1;
         }
         return ans;
     }
-    inline int nPr(int n, int r) {
+ 
+    inline Z fac(int n) {
+        if(n < 0) return 0;
+        if(n >= MXS_) up_(n);
+        return fac_[n];
+    }
+    inline Z invFac(int n) {
+        if(n < 0) return 0;
+        if(n >= MXS_) up_(n);
+        return inv_[n];
+    }
+ 
+    inline Z nCr(int n, int r) {
         if(r < 0 || r > n) return 0;
-        up_(n);
-        return int(fac_[n] * 1LL * inv_[n - r] % mod);
+        if(n >= MXS_) up_(n);
+        return fac_[n] * inv_[r] * inv_[n - r];
     }
- 
-    inline int add(int x, int y) {
-        x = y < 0? x + y + mod: x + y;
-        return x >= mod? x - mod: x;
+    // For large N. In O(min(r, n - r))
+    inline Z nCr(int64_t n, int64_t r) {
+        if(r < 0 || r > n) return 0;
+        r = min<int64_t>(r, n - r);
+        if(r >= MXS_) up_(int(r));
+        Z ans = inv_[r];
+        for(int64_t i = n - r + 1; i <= n; i++) ans = ans * i;
+        return ans;
     }
-    inline int mul(int x, int y) {
-        return int(x * 1LL * y % mod);
+    inline Z nPr(int n, int r) {
+        if(r < 0 || r > n) return 0;
+        if(n >= MXS_) up_(n);
+        return fac_[n] * inv_[n - r];
     }
- 
-    inline int sub(int x, int y) {
-        return ((x - y) % mod + mod) % mod;
+    inline Z stars_and_bars(int n, int r){
+        return nCr(n + r - 1, r - 1);
     }
- 
-    inline int Inv(int x) {
-        return fp(x, mod - 2);
-    }
- 
-    inline int divide(int a, int b) {
-        return mul(a, Inv(b));
-    }
- 
-    inline int catalan(int n) {
-        return mul(nCr(2 * n, n), Inv(n + 1));
-    }
- 
-    inline int StarsAndPars(int n, int k) {
-        return nCr(n + k - 1, k - 1);
+    inline Z catalan(int n) {
+        if(n < 0) return 0;
+        if(n * 2 >= MXS_) up_(n * 2);
+        return fac_[2 * n] * inv_[n] * inv_[n + 1];
     }
 }
+// using namespace combinatorics;
 ```
 
 <!-- <div style="page-break-after: always;"></div> -->
@@ -3282,14 +3302,18 @@ void debug_out(H&& h, T&&... t) {
 #define print(...) cout<<"["<<#__VA_ARGS__<<"]:",debug_out(__VA_ARGS__)
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # Bit Twiddle Permute
 ```cpp
-ll bit_twiddle_permute(ll v) { // next integer that has _pop_count(v) bits
-    ll t = v | (v - 1);
-    ll w = (t + 1) | (((~t & -~t) - 1) >> (__builtin_ctz(v) + 1));
+int bit_twiddle_permute(int v) { // next integer that has _pop_count(v) bits
+    int t = v | (v - 1);
+    int w = (t + 1) | (((~t & -~t) - 1) >> (__builtin_ctz(v) + 1));
     return w;
 }
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 # min cut Stoer Wagner
 ```
@@ -3357,6 +3381,8 @@ struct StoerWagner { // n^3, 1-based, undirected
 };
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # wheel factorization
 ```
 vector<ll> fac(ll n) {
@@ -3380,6 +3406,8 @@ vector<ll> fac(ll n) {
     return ret;
 }
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 # SOS DP
 ```
@@ -3410,6 +3438,8 @@ void backwardRev(vector<int> &dp) {
             if (m & (1 << i)) dp[m ^ (1 << i)] -= dp[m];
 }
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 # Catalan numbers
 ```
@@ -3461,6 +3491,8 @@ only if there is no such index i<j<k, such that ak<ai<aj).
 
 // 10- The number of ways to cover the ladder 1..n using n rectangles
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 # LCA in O(1)
 ```
@@ -3521,7 +3553,9 @@ struct LCA {
 };
 ```
 
-# and (&) in range
+<!-- <div style="page-break-after: always;"></div> -->
+
+# and (&) in range [l, r]
 ```
 ll andRange(ll l, ll r) {
     ll ans=0, msb = -1;
@@ -3537,13 +3571,7 @@ ll andRange(ll l, ll r) {
 }
 ```
 
-# optimizations
-```
-#pragma GCC optimize("O3")
-#pragma GCC optimize ("unroll-loops")
-#pragma GCC optimize ("Ofast")
-#pragma GCC target("avx2")
-```
+<!-- <div style="page-break-after: always;"></div> -->
 
 # fast map
 ```
@@ -3568,6 +3596,8 @@ struct chash {
 };
 gp_hash_table<int, int, chash> table;
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 # kth balanced bracket sequence
 ```
@@ -3599,6 +3629,8 @@ string kth_balanced(int n, int k) {
 }
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # next_balanced_sequence
 ```
 bool next_balanced_sequence(string & s) { // O(n)
@@ -3622,6 +3654,9 @@ bool next_balanced_sequence(string & s) { // O(n)
     return false;
 }
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
+
 # long division
 ```
 int a = 23, b = 5, n = 10;
@@ -3633,6 +3668,8 @@ for (int i = 0; i < n; i++) {
     s.push_back(k);              // Store the digit
 }
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 # LIS
 ```
@@ -3682,6 +3719,8 @@ int lis_with_sequence(const vector<int>& a,
     }
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # 0/1 Knapsack
 ```
 int knapsack(int W, vector<int> &val, vector<int> &wt) {
@@ -3710,6 +3749,8 @@ int unbounded_knapSack(int capacity, vector<int> &val, vector<int> &wt) {
 }
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # edit distance
 ```
 string a, b; cin >> a >> b;
@@ -3731,6 +3772,8 @@ for (int i = 1; i <= na; i++) {
 cout << dp[na][nb];
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # remove game
 ```
 void solve() {
@@ -3751,6 +3794,8 @@ void solve() {
 }
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # count subsets sum to k
 ```
 int perfectSum(vector<int> &arr, int target) {
@@ -3769,6 +3814,8 @@ int perfectSum(vector<int> &arr, int target) {
     return ndp[target];
 }
 ```
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 # longest common subsequence
 ```
@@ -3807,6 +3854,8 @@ void lcs(char* X, char* Y, int m, int n)
 
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # shortest common supersequence
 ```
 while (i > 0 && j > 0) {
@@ -3834,6 +3883,8 @@ reverse(result.begin(), result.end());
 return result;
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # hamiltonian paths
 ```
 int rec(int u, int vis) {
@@ -3852,6 +3903,8 @@ int rec(int u, int vis) {
 }
 ```
 
+<!-- <div style="page-break-after: always;"></div> -->
+
 # pragmas
 ```
 #pragma GCC optimize("Ofast")
@@ -3859,7 +3912,9 @@ int rec(int u, int vis) {
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
 ```
 
-#Full Dynamic Array
+<!-- <div style="page-break-after: always;"></div> -->
+
+# Full Dynamic Array
 ```
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T>
@@ -3927,4 +3982,74 @@ struct DynArray {
 
     int size() { return sz(root); }
 };
+```
+
+<!-- <div style="page-break-after: always;"></div> -->
+
+# BucketList
+```
+template<class T>
+struct BucketList {
+    int siz = 0;
+    vector<vector<T> > a;
+    static constexpr int SPLIT_RATIO = 28;
+
+    void insert(int i, T x) {
+        if (siz == 0) {
+            siz = 1;
+            a = {{x}};
+            return;
+        }
+        siz++;
+        for (ll bi = 0; bi < size(a); bi++) {
+            auto &bucket = a[bi];
+            if (i <= size(bucket)) {
+                bucket.insert(begin(bucket) + i, x);
+                if (size(bucket) > size(a) * SPLIT_RATIO) {
+                    auto L = end(bucket) - size(bucket) / 2, R = end(bucket);
+                    a.emplace(begin(a) + bi + 1, L, R);
+                    // bucket might be broken
+                    a[bi].erase(L, R);
+                }
+                return;
+            }
+            i -= size(bucket);
+        }
+    }
+
+    void erase(int i) {
+        siz--;
+        for (int bi = 0; bi < size(a); bi++) {
+            auto& bucket = a[bi];
+            if (i < size(bucket)) {
+                bucket.erase(begin(bucket) + i);
+                if (bucket.empty()) a.erase(begin(a) + bi);
+                return;
+            }
+            i -= size(bucket);
+        }
+    }
+
+    T& access(int i) {
+        for (auto& bucket : a) {
+            if (i < size(bucket)) return bucket[i];
+            i -= size(bucket);
+        }
+        assert(false);
+    }
+};
+```
+
+<!-- <div style="page-break-after: always;"></div> -->
+
+# NCR table
+```
+void preprocess_nCr() {
+    for (int n = 0; n < N; n++) {
+        C[n][0] = C[n][n] = 1;
+        for (int r = 1; r < n; r++) {
+            C[n][r] = (C[n - 1][r - 1] + C[n - 1][r]) % MOD;
+        }
+    }
+}
 ```
