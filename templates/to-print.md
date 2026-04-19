@@ -1314,7 +1314,7 @@ string lcs (string S, string T) {
 
 <!-- <div style="page-break-after: always;"></div> -->
 
-# Largest lexicographical  substring
+# Largest lexicographical substring
 ```
 string largestLexSubstring(const string &s) {
     int n = int(s.size());
@@ -1526,7 +1526,7 @@ class Dinic { // O(n^2 * m), 0-based
 
 <!-- <div style="page-break-after: always;"></div> -->
 
-# Dynamic Connectivity.
+# Dynamic Connectivity
 ```
 struct Query {
     char t;
@@ -3305,7 +3305,7 @@ void debug_out(H&& h, T&&... t) {
 <!-- <div style="page-break-after: always;"></div> -->
 
 # Bit Twiddle Permute
-```cpp
+```
 int bit_twiddle_permute(int v) { // next integer that has _pop_count(v) bits
     int t = v | (v - 1);
     int w = (t + 1) | (((~t & -~t) - 1) >> (__builtin_ctz(v) + 1));
