@@ -6,3 +6,6 @@ bits/stdc++
 .venv
 /build
 /cmake-build-fast
+main
+val
+gen

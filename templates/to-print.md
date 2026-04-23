@@ -2039,7 +2039,7 @@ namespace combinatorics {
     istream& operator >> (istream& in, Z &n) {
         int64_t x; in >> x;  n = {x}; return in;
     }
-    Z operator"" _M(uint64_t x) { return {int64_t(x)}; }
+    Z operator""_M(const unsigned long long x) { return {int64_t(x)}; }
  
     Z fix(int64_t x) {
         int v = int(x < mod * 2 && x >= -mod? x: x % mod);
